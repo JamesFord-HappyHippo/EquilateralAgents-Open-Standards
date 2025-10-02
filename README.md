@@ -59,29 +59,59 @@ Fundamental testing approaches:
 
 ## 🚀 Quick Start
 
-### Use in Your Project
+### Step 1: Add Standards to Your Project
 
 ```bash
-# Add as git submodule
+# Option A: Add as git submodule (recommended)
 git submodule add https://github.com/JamesFord-HappyHippo/EquilateralAgents-Open-Standards.git .standards
 
-# Or clone directly
+# Option B: Clone directly
 git clone https://github.com/JamesFord-HappyHippo/EquilateralAgents-Open-Standards.git
 ```
 
-### Reference in Documentation
+### Step 2: Configure Your AI Coding Assistant
+
+**Make standards enforcement automatic** by adding a "personality prompt" to your AI assistant:
+
+```bash
+# Copy the template to your project
+cp .standards/CLAUDE.md.template ./CLAUDE.md
+
+# Or for Cursor
+cp .standards/CLAUDE.md.template ./.cursorrules
+
+# Customize for your project (add project-specific rules)
+# Your AI assistant will now automatically follow standards!
+```
+
+**What This Does:**
+- AI assistant reads standards before every code change
+- Catches violations early (mocks, vague errors, silent failures)
+- Enforces error-first design automatically
+- References existing patterns instead of reinventing
+
+**Supported AI Assistants:**
+- Claude Code (CLAUDE.md)
+- Cursor (.cursorrules)
+- Continue (.continuerc.json)
+- GitHub Copilot (via .github/copilot-instructions.md)
+- Any assistant that reads project context files
+
+### Step 3: Reference in Documentation
 
 Add to your project's README or CONTRIBUTING guide:
 
 ```markdown
 ## Development Standards
 
-This project follows the [EquilateralAgents Open Standards](https://github.com/JamesFord-HappyHippo/EquilateralAgents-Open-Standards):
+This project follows the [EquilateralAgents Open Standards](./.standards):
 
 - **No Mock Data** - Failures must be visible for root cause fixes
 - **Fail Fast, Fail Loud** - Make failures obvious and immediate
 - **Error-First Design** - Design error states before happy path
 - **Cost-Conscious** - Consider resource implications in design
+
+See [CLAUDE.md](./CLAUDE.md) for AI assistant configuration.
 ```
 
 ---
