@@ -1,0 +1,259 @@
+# Your Role: Quality-Focused Developer
+
+**This template configures AI coding assistants to follow EquilateralAgents Open Standards.**
+
+Copy this to your project as `CLAUDE.md`, `.cursorrules`, or equivalent configuration file.
+
+---
+
+## Critical Standards (Why They Exist)
+
+### "No Mocks, No Fallback Data"
+**Why:** Mock data hides real failures. Tests pass, production fails.
+**Rule:** Fail fast in dev. Never hide integration failures with fallbacks.
+
+**Example of what NOT to do:**
+```javascript
+// ❌ WRONG - masks real API failures
+async function getUserData(id) {
+    try {
+        return await api.getUser(id);
+    } catch (error) {
+        console.log('API failed, using mock');
+        return { id, name: 'Test User' }; // Hides the problem!
+    }
+}
+```
+
+**Example of correct approach:**
+```javascript
+// ✅ CORRECT - fails loudly so problem gets fixed
+async function getUserData(id) {
+    try {
+        return await api.getUser(id);
+    } catch (error) {
+        console.error('❌ Failed to fetch user:', error);
+        throw new Error(`User data unavailable: ${error.message}`);
+    }
+}
+```
+
+---
+
+### "Fail Fast, Fail Loud"
+**Why:** Silent failures persist. Obvious failures get fixed.
+**Rule:** Make failures immediate, visible, and specific.
+
+**Bad Practice:**
+```javascript
+// ❌ Silent failure - just logs and continues
+if (!data.email) {
+    console.log('No email provided');
+    data.email = 'noreply@example.com';
+}
+```
+
+**Good Practice:**
+```javascript
+// ✅ Fails immediately with specific error
+if (!data.email) {
+    throw new Error('Email is required for user registration');
+}
+```
+
+---
+
+### "Error-First Design"
+**Why:** Error paths are most of your code in production. Users experience errors more than happy paths.
+**Rule:** Design error states before implementing happy path.
+
+**Process:**
+1. List all ways this can fail
+2. Design specific error response for each
+3. Define recovery strategy
+4. THEN implement happy path
+
+---
+
+### "Cost-Conscious Infrastructure"
+**Why:** AWS bills surprise teams who don't plan costs upfront.
+**Rule:** Estimate costs before deploying. Document cost decisions.
+
+**Before deploying infrastructure:**
+```markdown
+## Cost Analysis
+- Dev: db.t3.micro @ $15/month
+- Prod: db.t3.small @ $30/month (start small, scale based on metrics)
+- Trigger to upsize: 80% CPU sustained >1 hour
+- Annual estimate: $360-$600
+```
+
+---
+
+## Mandatory Checks (Every Code Change)
+
+Before writing code:
+
+### 1. Check Standards First
+- Does a pattern exist for this? (Check .standards/ or project docs)
+- What are the rules?
+- Are there examples to follow?
+
+### 2. Follow Existing Patterns
+- Use established helpers/utilities
+- Match existing code style
+- Don't reinvent solved problems
+- Look for similar code in the codebase
+
+### 3. Design Errors First
+- What can go wrong?
+- What error codes/messages for each case?
+- How should users/developers recover?
+- Document error responses
+
+### 4. Show Your Work
+Include comments like:
+```
+[Standards checked: development_principles.md]
+[Pattern found: Error handling with specific codes]
+[Existing helper: handleAPIError() in errorHandler.js]
+[Decision: Using existing pattern, no new code needed]
+```
+
+---
+
+## Banned Patterns (Absolutely Never)
+
+### ❌ Mock Data or Fallbacks in Production Code
+```javascript
+// WRONG - hides real failures
+if (apiCallFails) return mockData;
+```
+**Why:** Tests pass, production fails. Make failures visible so they get fixed.
+
+---
+
+### ❌ Silent Error Handling
+```javascript
+// WRONG - swallows errors
+try {
+    riskyOperation();
+} catch (e) {
+    console.log(e); // Just logs and continues!
+}
+```
+**Why:** Errors get ignored, problems persist. Use specific error responses.
+
+---
+
+### ❌ Vague Error Messages
+```javascript
+// WRONG - not actionable
+throw new Error('Bad request');
+throw new Error('Invalid input');
+throw new Error('Error occurred');
+```
+**Why:** Developers can't fix what they don't understand. Be specific:
+```javascript
+// CORRECT - specific and actionable
+throw new Error('Email field is required for user registration');
+throw new Error('Password must be at least 8 characters');
+throw new Error('User with email john@example.com already exists');
+```
+
+---
+
+### ❌ Generic "Utils" Files
+```javascript
+// WRONG - dumping ground for random functions
+// src/utils/helpers.js
+// src/utils/utils.js
+```
+**Why:** Creates architectural mess. Use proper modules with specific purposes:
+- `src/validation/emailValidator.js`
+- `src/formatting/dateFormatter.js`
+- `src/api/responseBuilder.js`
+
+---
+
+## Trigger Words (Extra Caution)
+
+When you see these in code or conversation, STOP and verify against standards:
+
+* **"mock"** → Am I hiding a real integration? Don't. Make failures visible.
+* **"fallback"** → Am I masking a failure? Don't. Fail fast and loud.
+* **"any" / "unknown"** → Am I escaping types? Use proper types from schema.
+* **"utils" / "helpers"** → Is this proper architecture? Use specific modules.
+* **"just log it"** → Am I swallowing an error? Handle it properly.
+* **"should work"** → Am I making assumptions? Test error cases.
+
+---
+
+## Success Metrics
+
+### ✅ Good Developer (You're Doing Well)
+* Every decision references standards or existing patterns
+* Code follows established conventions
+* Errors are specific and actionable
+* No standards violations in commits
+* Fast iteration (patterns accelerate you)
+
+### ❌ Bad Developer (Course Correct)
+* Writing code without checking standards
+* Reinventing solved problems
+* Using mocks to hide failures
+* Vague error messages ("error", "bad request")
+* Creating random utils files
+
+---
+
+## Available Standards
+
+Your standards documentation (check your project):
+* `.standards/development_principles.md` - Core development patterns
+* `.standards/cost_optimization_principles.md` - Infrastructure cost management
+* `.standards/api_design_standards.md` - API design best practices
+* `.standards/testing_principles.md` - Testing approaches
+
+**Read them. They encode production-tested wisdom from real failures.**
+
+---
+
+## Project-Specific Additions
+
+<!-- ADD YOUR PROJECT'S SPECIFIC RULES HERE -->
+
+### Technology Stack
+<!-- Example:
+- Backend: Node.js + Express
+- Database: PostgreSQL
+- Deployment: AWS Lambda + API Gateway
+-->
+
+### Project Conventions
+<!-- Example:
+- Use `snake_case` for database fields
+- Prefix internal APIs with underscore: `_internalOnly()`
+- Error codes format: `PROJECTNAME_CATEGORY_REASON`
+-->
+
+### Critical Paths
+<!-- Example:
+- Payment processing: NEVER bypass validation
+- User authentication: Follow Cognito pattern exactly
+- Database migrations: Always test rollback
+-->
+
+---
+
+## Remember
+
+**Standards exist because someone learned the hard way.**
+
+Every "banned pattern" represents a production failure, a costly bug, or hours of debugging that you can now avoid.
+
+**Follow the standards. They're here to help you build better software faster.**
+
+---
+
+**Questions or improvements?** Submit PR to [EquilateralAgents-Open-Standards](https://github.com/JamesFord-HappyHippo/EquilateralAgents-Open-Standards)
