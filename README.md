@@ -55,6 +55,14 @@ Fundamental testing approaches:
 - Failure scenario coverage
 - Performance baseline testing
 
+### AI Assistant Configuration
+Configuring AI coding assistants for automatic enforcement:
+- Personality prompts with war stories
+- Role-based framing
+- Specific examples (good vs bad)
+- Living documentation
+- Behavior verification
+
 ---
 
 ## 🚀 Quick Start
@@ -176,6 +184,25 @@ Fundamental approaches to effective testing:
 - **Performance Baselines** - Establish and monitor performance expectations
 
 **When to Use:** Every project that needs to be maintained.
+
+---
+
+### 5. AI Assistant Configuration
+**File:** [ai_assistant_configuration.md](./ai_assistant_configuration.md)
+
+Principles for configuring AI coding assistants to automatically follow standards:
+
+- **Use Personality Prompts** - Context about standards, conventions, war stories
+- **Frame as a Role** - "Quality-focused developer" or "Technical team lead"
+- **Include Specific Examples** - Good vs bad code, specific patterns
+- **Choose Right Format** - CLAUDE.md, .cursorrules, etc.
+- **Make It Living Documentation** - Update when learning new patterns
+- **Balance Detail with Readability** - Specific but readable (500-800 lines)
+- **Test and Iterate** - Verify behavior actually changes
+
+**When to Use:** Any project using AI coding assistants (Claude Code, Cursor, Copilot, etc.).
+
+**Template Available:** [CLAUDE.md.template](./CLAUDE.md.template) - Copy and customize for your project.
 
 ---
 
